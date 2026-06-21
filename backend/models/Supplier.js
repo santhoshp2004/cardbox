@@ -1,53 +1,26 @@
 const mongoose = require('mongoose');
 
-const SupplierSchema = new mongoose.Schema({
-  supplierCode: {
-    type: String,
-    required: true,
-    unique: true
+const supplierSchema = new mongoose.Schema({
+  supplierCode: { type: String, required: true, unique: true },
+  merchantName: { type: String, required: true },
+  contactPerson: { type: String, required: true },
+  email: { type: String },
+  mobileNumber: { type: String, required: true },
+  address: { type: String },
+  materialType: { type: String },
+  // Vehicle / Load Info
+  vehicleType: { 
+    type: String, 
+    enum: ['truck', 'van', 'lorry', 'other'], 
+    required: true 
   },
-  supplierName: {
-    type: String,
-    required: true
-  },
-  contactPerson: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true
-  },
-  mobileNumber: {
-    type: String,
-    required: true
-  },
-  gstNumber: {
-    type: String
-  },
-  address: {
-    type: String,
-    required: true
-  },
-  materialType: {
-    type: String,
-    required: true
-  },
-  status: {
-    type: String,
-    enum: ['ACTIVE', 'INACTIVE'],
-    default: 'ACTIVE'
-  },
-  assignedTo: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'User'
-  },
-  createdBy: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'User'
-  }
-}, {
-  timestamps: true
-});
+  vehicleNumber: { type: String, required: true },
+  driverName: { type: String, required: true },
+  payloadDetails: { type: String },
+  
+  status: { type: String, enum: ['ACTIVE', 'INACTIVE'], default: 'ACTIVE' },
+  managedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+}, { timestamps: true });
 
-module.exports = mongoose.model('Supplier', SupplierSchema);
+module.exports = mongoose.model('Supplier', supplierSchema);

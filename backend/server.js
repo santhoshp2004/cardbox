@@ -1,12 +1,14 @@
 const express = require('express');
-const dotenv = require('dotenv');
+
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
-const connectDB = require('./config/db');
 
 // Load env vars
+const dotenv = require('dotenv');
 dotenv.config();
+
+const connectDB = require('./config/init');
 
 // Connect to database
 connectDB();
@@ -42,7 +44,9 @@ io.on('connection', (socket) => {
 app.set('io', io);
 
 // Mount routers
-app.use('/api/auth', require('./routes/auth'));
+app.use('/api/auth', require('./routes/auth.routes'));
+// app.use('/api/clients', require('./routes/clients.routes'));
+// app.use('/api/orders', require('./routes/orders.routes'));
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,26 +1,74 @@
-export default function Login() {
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import './Login.css';
+
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        login(data.data.user, data.data.token);
+        navigate('/');
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('Server error. Please try again.');
+    }
+  };
+
   return (
-    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-dark)' }}>
-      <div className="glass-panel animate-fade-in" style={{ width: '100%', maxWidth: '400px', padding: '2.5rem' }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ color: 'var(--primary-color)', fontSize: '2rem', fontWeight: 800 }}>CardBox<span style={{color: 'white'}}>.Sys</span></h1>
-          <p style={{ marginTop: '0.5rem' }}>Sign in to your account</p>
+    <div className="login-container">
+      <div className="login-glass-panel">
+        <div className="login-header">
+          <div className="login-logo">CB</div>
+          <h2>CardBox Access</h2>
+          <p>Enter your credentials to manage the system</p>
         </div>
         
-        <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>Email Address</label>
-            <input type="email" className="input-field" placeholder="admin@cardbox.com" />
+        {error && <div className="login-error">{error}</div>}
+        
+        <form onSubmit={handleLogin} className="login-form">
+          <div className="form-group">
+            <label>Email or Username</label>
+            <input 
+              type="text" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="sa@cardbox.com"
+              required 
+            />
           </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>Password</label>
-            <input type="password" className="input-field" placeholder="••••••••" />
+          <div className="form-group">
+            <label>Password</label>
+            <input 
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required 
+            />
           </div>
-          <button type="button" className="btn btn-primary" style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem' }}>
-            Sign In
-          </button>
+          <button type="submit" className="login-btn">Secure Login</button>
         </form>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
