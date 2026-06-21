@@ -3,7 +3,7 @@
  * Centralizes all API endpoint management and configuration
  */
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = "https://cardbox-production-6a30.up.railway.app";
 
 /**
  * API configuration object with all endpoints
